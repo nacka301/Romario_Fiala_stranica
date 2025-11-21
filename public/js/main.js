@@ -13,6 +13,7 @@ if (navToggle) {
         navMenu.classList.toggle('active');
     });
 
+    
     // Close menu when clicking on a link
     navLinks.forEach(link => {
         link.addEventListener('click', () => {
