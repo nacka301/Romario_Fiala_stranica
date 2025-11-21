@@ -1,0 +1,190 @@
+==========================================
+PREGLED STRANICE - ANALIZA VIŠKOVA KODA
+==========================================
+
+Pregledao sam CIJELU stranicu (HTML, CSS, JS) i evo što sam našao:
+
+==========================================
+🗑️ STVARI KOJE SE NE KORISTE (MOGU SE OBRISATI):
+==========================================
+
+1. ❌ CSS: .btn-secondary klasa
+   ------------------------------
+   Lokacija: public/css/styles.css (linija ~290-303)
+   
+   Razlog: Koristio se za "Kontaktirajte nas" transparentno dugme,
+           ali sad ima samo jedno dugme (.btn-primary)
+   
+   Kod za brisanje:
+   ```css
+   .btn-secondary {
+       background-color: transparent;
+       color: white;
+       border: 2px solid white;
+       box-shadow: var(--shadow-md);
+   }
+   
+   .btn-secondary:hover {
+       background-color: white;
+       color: var(--primary-color);
+       transform: translateY(-2px);
+       box-shadow: var(--shadow-lg);
+   }
+   ```
+
+2. ❌ CSS: .hero-buttons klasa
+   ----------------------------
+   Lokacija: public/css/styles.css (linija ~304-309)
+   
+   Razlog: Koristilo se za wrappanje 2 dugmeta (Nazovi odmah + Kontaktirajte),
+           sad imaš samo jedno dugme direktno u .hero-content
+   
+   Kod za brisanje:
+   ```css
+   .hero-buttons {
+       display: flex;
+       gap: var(--spacing-md);
+       flex-wrap: wrap;
+       justify-content: center;
+   }
+   ```
+
+3. ❌ CSS: Utility klase (skoro nekorištene)
+   ------------------------------------------
+   Lokacija: public/css/styles.css (linija ~1157-1171)
+   
+   Razlog: Utility klase (.mt-1, .mb-2, .text-center itd.) nisu korištene
+           nigdje u HTML-u. Možeš ih zadržati za buduće projekte,
+           ali trenutno zauzimaju prostor.
+   
+   Kod za brisanje (opciono):
+   ```css
+   .text-center { text-align: center; }
+   .mt-1 { margin-top: var(--spacing-sm); }
+   .mt-2 { margin-top: var(--spacing-md); }
+   .mt-3 { margin-top: var(--spacing-lg); }
+   .mb-1 { margin-bottom: var(--spacing-sm); }
+   .mb-2 { margin-bottom: var(--spacing-md); }
+   .mb-3 { margin-bottom: var(--spacing-lg); }
+   ```
+
+4. ❌ JS: Debounce funkcija (nepotpuna)
+   -------------------------------------
+   Lokacija: public/js/main.js (linija ~365-368)
+   
+   Razlog: Funkcija je započeta ali nije završena i ne koristi se nigdje.
+   
+   Kod za brisanje:
+   ```javascript
+   function debounce(func, wait) {
+       let timeout;
+       return function executedFunction(...args) {
+           const later = () => {
+               clearTimeout(timeout);
+               func(...args);
+           };
+           clearTimeout(timeout);
+   ```
+
+5. ⚠️ META: "tepiha" u meta keywords
+   -----------------------------------
+   Lokacija: public/index.html (linija ~6 i ~14)
+   
+   Razlog: Meta description i og:description spominju "tepiha",
+           ali ta usluga nije u ponudi (skinuo si ju prije)
+   
+   Trenutni kod:
+   ```html
+   <meta name="description" content="Profesionalno postavljanje parketa, laminata, vinil podova, tepiha i brušenje parketa...">
+   <meta property="og:description" content="...tepiha i brušenje...">
+   ```
+   
+   Promijeni u:
+   ```html
+   <meta name="description" content="Profesionalno postavljanje parketa, laminata, vinil podova i brušenje parketa...">
+   <meta property="og:description" content="...vinil podova i brušenje...">
+   ```
+
+6. ⚠️ JSON-LD: Također spominje "tepiha"
+   ----------------------------------------
+   Lokacija: public/index.html (linija ~32)
+   
+   JSON-LD schema također ima stari opis s "tepiha".
+
+==========================================
+✅ STVARI KOJE IZGLEDAJU ČUDNO ALI SU OK:
+==========================================
+
+1. ✅ Duplicirani "lastScroll" varijabla
+   --------------------------------------
+   Razlog: Definirana je ali ne koristi se dalje.
+          Može se obrisati, ali ne smeta.
+
+2. ✅ Intersection Observer
+   -------------------------
+   Razlog: Koristi se za animacije scrollanja - SVE OK!
+
+3. ✅ config.js fajl
+   ------------------
+   Razlog: Dinamički ažurira sadržaj - KORISTI SE!
+
+4. ✅ Lazy loading logika u JS-u
+   ------------------------------
+   Razlog: Fallback za stare browsere - POTREBNO!
+
+5. ✅ Honeypot anti-spam
+   ----------------------
+   Razlog: Sprječava spam - VAŽNO!
+
+==========================================
+📊 STATISTIKA KODA:
+==========================================
+
+HTML: 438 linija
+CSS:  1171 linija (može biti ~1150 bez viška)
+JS:   368 linija (može biti ~360 bez viška)
+
+VIŠKOVI:
+- CSS: ~21 linija nepotrebnih
+- JS:  ~8 linija nepotrebnih
+- META: 2 mjesta gdje piše "tepiha" a ne treba
+
+UKUPNO: ~30 linija koda može se očistiti
+
+==========================================
+🎯 PRIORITET ČIŠĆENJA:
+==========================================
+
+VISOK PRIORITET (obavezno):
+✅ Makni "tepiha" iz meta tagova
+✅ Makni "tepiha" iz JSON-LD schema
+
+SREDNJI PRIORITET (preporučeno):
+⚠️ Obriši .btn-secondary CSS
+⚠️ Obriši .hero-buttons CSS
+⚠️ Obriši nepotpunu debounce funkciju
+
+NIZAK PRIORITET (opciono):
+🔹 Obriši utility klase ako ih ne planiraš koristiti
+🔹 Obriši "lastScroll" varijablu
+
+==========================================
+ZAKLJUČAK:
+==========================================
+
+✅ Kod je VEOMA ČIST i dobro organiziran!
+✅ Nema velikih viškova ili smeća
+✅ Sve animacije i funkcije se koriste
+✅ Performance optimizacije su na mjestu
+
+Jedini stvarni problem:
+❌ "tepiha" u meta tagovima (treba ispraviti!)
+
+Sve ostalo je kozmetika - možeš očistiti za 1-2% manju veličinu fajla,
+ali to neće imati utjecaj na performance.
+
+Moj prijedlog: MAKNI "tepiha" iz meta tagova, ostalo ostavi kako je!
+
+==========================================
+
+Želiš li da ti sad sve to AUTOMATSKI očistim? 🧹

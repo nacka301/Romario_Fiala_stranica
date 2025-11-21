@@ -1,0 +1,96 @@
+==========================================
+KAKO PROMIJENITI PODATKE NA STRANICI
+==========================================
+
+SUPER JEDNOSTAVNO! Sve se mijenja na jednom mjestu.
+
+📁 OTVORI FAJL:
+   public/js/config.js
+
+✏️ PROMIJENI što trebaš (sve je jasno označeno):
+
+   ✅ Ime firme
+   ✅ Telefon
+   ✅ Email  
+   ✅ Adresa/Lokacija
+   ✅ Instagram username
+   ✅ Facebook profil
+   ✅ Radno vrijeme
+   ✅ Tekstovi na stranici
+   ✅ OIB i matični broj (opciono)
+
+💾 SPREMI fajl (Ctrl + S)
+
+🔄 REFRESH stranicu u browseru (F5)
+
+GOTOVO! ✅
+
+==========================================
+PRIMJERI PROMJENA:
+==========================================
+
+📞 TELEFON:
+   phone: "+385 99 123 4567",
+   phoneClean: "38599123567",
+   (phoneClean = isti broj BEZ razmaka i znakova)
+
+📷 INSTAGRAM:
+   instagram: "fialmont_official",
+   (samo USERNAME, bez https://)
+
+📘 FACEBOOK:
+   facebook: "fialmont.hr",
+   (može biti USERNAME ili brojčani ID)
+
+📍 LOKACIJA:
+   location: "Velika Gorica, Hrvatska",
+   locationCity: "Velika Gorica",
+   (ako je u drugom gradu promijeni)
+
+⏰ RADNO VRIJEME:
+   workingHours: "Pon-Pet: 08:00-17:00, Sub: 09:00-13:00",
+   (ili ostavi "Kontaktirajte nas za dogovor")
+
+🏢 POSLOVNI PODACI (opciono):
+   oib: "12345678901",
+   maticniBroj: "98765432",
+   adresa: "Ulica 123, 10000 Zagreb",
+   (ako imaš podatke, upisi, inače ostavi prazno "")
+
+==========================================
+ŠTO SE AUTOMATSKI AŽURIRA:
+==========================================
+
+Kad promijeniš podatke u config.js, automatski se mijenja:
+
+✅ Navigacija (logo)
+✅ Hero sekcija (naslov, dugmad)
+✅ O nama tekst
+✅ Kontakt podaci (svi)
+✅ Footer (sve sekcije)
+✅ Social media linkovi (svi)
+✅ Meta tagovi (Google, Facebook preview)
+✅ Browser tab naslov
+
+==========================================
+AKO NEŠTO NE RADI:
+==========================================
+
+1. Provjeri jesi li dobro spremio fajl
+2. Refreshaj browser (Ctrl + Shift + R - hard refresh)
+3. Otvori Developer Console (F12) i provjeri greške
+4. Provjeri jesi li stavio navodne znakove "" oko teksta
+
+==========================================
+NAPREDNIJE PROMJENE:
+==========================================
+
+Za mijenjanje:
+- Boja (braon na drugu boju) → public/css/styles.css
+- Slike → public/images/ folder
+- Usluge (dodaj/makni) → public/index.html (sekcija #usluge)
+- Opcije u formi → public/index.html (kontakt forma)
+
+==========================================
+
+Sretno! 🚀

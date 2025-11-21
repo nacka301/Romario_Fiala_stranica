@@ -1,0 +1,24 @@
+{
+  "name": "fialmont-website",
+  "version": "1.0.0",
+  "description": "Website za postavljanje i brušenje podova - Fial Mont",
+  "type": "module",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'Static site - no build needed'",
+    "deploy": "vercel --prod"
+  },
+  "keywords": [
+    "podovi",
+    "parket",
+    "laminat",
+    "vinil",
+    "tepih",
+    "brušenje parketa"
+  ],
+  "author": "Fial Mont",
+  "license": "ISC",
+  "devDependencies": {
+    "vercel": "^33.0.0"
+  }
+}
