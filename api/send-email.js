@@ -32,7 +32,7 @@ export default async function handler(req, res) {
 
         // Get Brevo API key from environment variable
         const BREVO_API_KEY = process.env.BREVO_API_KEY;
-        const RECIPIENT_EMAIL = process.env.RECIPIENT_EMAIL || 'info@romario-podovi.hr';
+        const RECIPIENT_EMAIL = info@fialmont.hr || 'info@romario-podovi.hr';
 
         if (!BREVO_API_KEY) {
             console.error('BREVO_API_KEY is not set');
