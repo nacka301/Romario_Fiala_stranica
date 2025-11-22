@@ -25,7 +25,7 @@ const siteConfig = {
     
     // DRUŠTVENE MREŽE
     instagram: "VAŠPROFIL", // samo username (npr: "fialmont_official")
-    facebook: "VAŠID", // ID ili username (npr: "100012345678901" ili "fialmont")
+    facebook: "Fiala mont", // ID ili username (npr: "100012345678901" ili "fialmont")
     
     // DOMENA (ako imaš custom domenu, inače ostavi Vercel)
     website: "https://fialmont.vercel.app",
