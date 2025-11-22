@@ -22,7 +22,6 @@ if (navToggle) {
         });
     });
 }
-
 // Navbar scroll effect
 const navbar = document.querySelector('.navbar');
 
