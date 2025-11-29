@@ -49,7 +49,7 @@ module.exports = async function handler(req, res) {
 
         const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
         sendSmtpEmail.to = [{ email: RECIPIENT_EMAIL, name: 'Fial Mont' }];
-        sendSmtpEmail.sender = { email: 'noreply@fialmont.hr', name: 'Fial Mont Web Forma' };
+        sendSmtpEmail.sender = { email: 'vackadavid@gmail.com', name: 'Fial Mont Web Forma' };
         sendSmtpEmail.replyTo = { email: email, name: name };
         sendSmtpEmail.subject = `Novi upit sa web stranice - ${safeService}`;
         sendSmtpEmail.htmlContent = `
