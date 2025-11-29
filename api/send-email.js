@@ -28,7 +28,7 @@ module.exports = async function handler(req, res) {
         const apiKey = defaultClient.authentications['api-key'];
         apiKey.apiKey = process.env.BREVO_API_KEY;
 
-        const RECIPIENT_EMAIL = process.env.RECIPIENT_EMAIL || 'vackadavid@gmail.com';
+        const RECIPIENT_EMAIL = process.env.RECIPIENT_EMAIL || 'romario.fiala@gmail.com';
 
         if (!apiKey.apiKey) {
             console.error('BREVO_API_KEY is not set');
@@ -49,7 +49,7 @@ module.exports = async function handler(req, res) {
 
         const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
         sendSmtpEmail.to = [{ email: RECIPIENT_EMAIL, name: 'Fial Mont' }];
-        sendSmtpEmail.sender = { email: 'vackadavid@gmail.com', name: 'Fial Mont Web Forma' };
+        sendSmtpEmail.sender = { email: 'romario.fiala@gmail.com', name: 'Fial Mont Web Forma' };
         sendSmtpEmail.replyTo = { email: email, name: name };
         sendSmtpEmail.subject = `Novi upit sa web stranice - ${safeService}`;
         sendSmtpEmail.htmlContent = `
