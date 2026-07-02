@@ -176,7 +176,8 @@ button, a, .btn {
     padding: var(--spacing-sm) var(--spacing-md);
 }
 
-.nav-brand h1 {
+.nav-brand h1,
+.nav-brand .brand-text {
     font-family: var(--font-heading);
     font-size: 1.5rem;
     color: var(--primary-color);
@@ -1198,7 +1199,8 @@ section {
         padding: 12px 0;
     }
 
-    .nav-brand h1 {
+    .nav-brand h1,
+    .nav-brand .brand-text {
         font-size: 20px;
     }
 }
