@@ -16,8 +16,8 @@ const siteConfig = {
     location: "Daruvar, Hrvatska",
     locationCity: "Daruvar",
     locationCountry: "HR",
-    gpsLatitude: "45.8150",
-    gpsLongitude: "15.9819",
+    gpsLatitude: "45.5911",
+    gpsLongitude: "17.2251",
     
     // RADNO VRIJEME
     workingHours: "Kontaktirajte nas za dogovor",
@@ -28,7 +28,7 @@ const siteConfig = {
     facebook: "61583937603737", // ID ili username (npr: "100012345678901" ili "fialmont")
     
     // DOMENA (ako imaš custom domenu, inače ostavi Vercel)
-    website: "https://fialmont.vercel.app",
+    website: "https://fialamont.com",
     
     // HERO SEKCIJA
     heroTitle: "Kvalitetno postavljanje podova",
@@ -39,7 +39,7 @@ const siteConfig = {
     aboutText2: "Koristimo moderne tehnike i pažljiv pristup kako bi vaš pod bio savršeno postavljen.",
     
     // META PODACI (za Google)
-    metaDescription: "Profesionalno postavljanje parketa, laminata, vinil podova, tepiha i brušenje parketa. Iskustvo, kvalitet i preciznost.",
+    metaDescription: "Profesionalno postavljanje parketa, laminata i vinil podova te brušenje i obnova parketa. Daruvar i okolica. Besplatna procjena — kontaktirajte nas!",
     metaKeywords: "parket, laminat, vinil podovi, brušenje parketa, postavljanje podova",
     
     // OPCIONO: Poslovni podaci (ostavi prazno ako nema)
@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function updatePageContent() {
     // IME FIRME
-    const companyNameElements = document.querySelectorAll('.company-name, .nav-brand h1, .footer-section h3');
+    const companyNameElements = document.querySelectorAll('.company-name, .nav-brand h1, .nav-brand .brand-text, .footer-section h3');
     companyNameElements.forEach(el => {
         if (el) el.textContent = siteConfig.companyName;
     });
@@ -151,7 +151,7 @@ function updatePageContent() {
     }
     
     // Ažuriraj page title
-    document.title = `${siteConfig.companyName} - Postavljanje Parketa, Laminata, Vinila i Brušenje`;
+    document.title = `${siteConfig.companyName.trim()} | Parket, laminat, vinil i brušenje – ${siteConfig.locationCity}`;
     
     // Ažuriraj meta tagove
     updateMetaTags();
