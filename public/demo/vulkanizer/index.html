@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0f2a43">
+<title>Primjer: Vulkanizer Primjer | Online rezervacija termina</title>
+<meta name="description" content="Demo primjer web stranice za vulkanizera s online rezervacijom termina. Izmišljeni podaci.">
+<link rel="stylesheet" href="../_shared/base.css">
+<style>
+:root { --brand: #e8590c; --brand-ink: #fff; --accent: #ffb703; --dark: #0f2a43; --surface: #eef3f8; --bg: #fff; --ink: #0d1b2a; --muted: #4a5b6d; --line: #d5dee8; --font-display: "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif; }
+.btn-brand { background: #c2490a; }
+.kicker { color: #a93c06; }
+.hero { background: linear-gradient(160deg, #0f2a43 0%, #16476f 100%); color: #fff; position: relative; overflow: hidden; }
+.hero::before { content: ""; position: absolute; right: -90px; top: -60px; width: 340px; height: 340px; border-radius: 50%; border: 44px solid rgba(255,255,255,.07); box-shadow: 0 0 0 28px rgba(255,255,255,.04); }
+.hero-in { position: relative; padding-block: 2.5rem 3rem; display: grid; gap: 1.25rem; }
+.hero h1 { font-family: var(--font-display); font-weight: 900; font-size: var(--fs-h1); line-height: 1.04; letter-spacing: -.02em; max-width: 14ch; }
+.hero h1 span { color: #ffb703; }
+.hero p { max-width: 46ch; color: #d6e4f0; font-size: 1.1rem; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+.hero-actions .btn { flex: 1 1 180px; }
+.season { display: none; background: #ffb703; color: #111; font-weight: 700; }
+.season.show { display: block; }
+.season-in { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; justify-content: space-between; padding-block: .75rem; }
+.season a { text-decoration: underline; min-height: 44px; display: inline-flex; align-items: center; }
+.usp { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin-top: .25rem; }
+.usp li { background: rgba(255,255,255,.1); border-radius: 12px; padding: .7rem .9rem; font-weight: 700; font-size: .92rem; }
+/* Rezervacija */
+.book { background: #fff; border: 1px solid var(--line); border-radius: 20px; box-shadow: 0 12px 40px rgba(15,42,67,.1); padding: clamp(1rem, .5rem + 2.5vw, 2rem); }
+.progress { display: grid; grid-template-columns: repeat(4, 1fr); gap: .35rem; margin-bottom: 1.25rem; counter-reset: p; }
+.progress li { font-size: .74rem; font-weight: 800; text-align: center; color: var(--muted); border-top: 4px solid var(--line); padding-top: .4rem; }
+.progress li.on { color: #c2490a; border-color: #e8590c; }
+.progress li.done { color: var(--dark); border-color: var(--dark); }
+.step[hidden] { display: none; }
+.step h3 { font-size: 1.25rem; margin-bottom: .75rem; }
+.opts { display: grid; gap: .6rem; }
+.opt { position: relative; }
+.opt input { position: absolute; opacity: 0; inset: 0; }
+.opt label { display: grid; grid-template-columns: 1fr auto; gap: .1rem 1rem; min-height: 64px; align-items: center; padding: .75rem 1rem; border: 2px solid var(--line); border-radius: 12px; cursor: pointer; font-weight: 800; }
+.opt label small { grid-column: 1; color: var(--muted); font-weight: 500; }
+.opt label .p { grid-row: 1 / span 2; grid-column: 2; font-size: 1.1rem; color: #c2490a; }
+.opt input:checked + label { border-color: #e8590c; background: #fff4ec; }
+.opt input:focus-visible + label { outline: 3px solid var(--accent); }
+.slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; margin-top: .5rem; }
+.slot { position: relative; }
+.slot input { position: absolute; opacity: 0; inset: 0; }
+.slot label { display: grid; place-items: center; min-height: 48px; border: 2px solid var(--line); border-radius: 10px; font-weight: 800; cursor: pointer; }
+.slot input:checked + label { background: var(--dark); border-color: var(--dark); color: #fff; }
+.slot input:disabled + label { opacity: .4; text-decoration: line-through; cursor: not-allowed; background: #f0f0f0; }
+.slot input:focus-visible + label { outline: 3px solid var(--accent); }
+.nav-row { display: flex; gap: .6rem; margin-top: 1.25rem; }
+.nav-row .btn { flex: 1; }
+.summary { display: grid; gap: .5rem; background: var(--surface); border-radius: 12px; padding: 1rem; }
+.summary div { display: flex; justify-content: space-between; gap: 1rem; }
+.summary dt { color: var(--muted); }
+.summary dd { font-weight: 800; text-align: right; }
+.ok { text-align: center; padding: 1rem 0; }
+.ok .tick { width: 64px; height: 64px; margin: 0 auto 1rem; border-radius: 50%; background: #1b873f; color: #fff; display: grid; place-items: center; font-size: 2rem; }
+.ref { display: inline-block; margin-top: .5rem; padding: .4rem 1rem; background: var(--surface); border-radius: 8px; font-family: ui-monospace, Consolas, monospace; font-weight: 800; letter-spacing: .08em; }
+.err { color: #a4281c; font-weight: 700; font-size: .92rem; margin-top: .5rem; }
+/* Cjenik */
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: #fff; }
+table { width: 100%; border-collapse: collapse; min-width: 520px; }
+th, td { padding: .85rem 1rem; text-align: left; border-bottom: 1px solid var(--line); }
+th { background: var(--dark); color: #fff; font-size: .85rem; }
+tbody tr:last-child td { border-bottom: 0; }
+td:not(:first-child), th:not(:first-child) { text-align: right; white-space: nowrap; }
+.split { display: grid; gap: 1.75rem; }
+@media (min-width: 900px) { .hero-in { grid-template-columns: 1.15fr .85fr; align-items: center; padding-block: 4.5rem; } .split { grid-template-columns: .8fr 1.2fr; gap: 3rem; align-items: start; } .slots { grid-template-columns: repeat(4, 1fr); } .book { position: sticky; top: calc(var(--nav-h) + 16px); } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+ <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+</svg>
+<div class="demo-bar"><span><b>PRIMJER</b>Demo stranica s izmišljenim podacima</span><a href="../">&larr; Svi primjeri</a></div>
+<div class="season" id="season"><div class="container season-in"><span id="seasonTxt"></span><a href="#rezervacija">Rezerviraj termin &rarr;</a></div></div>
+
+<script>
+(function () {
+ var mo = new Date().getMonth() + 1, msg = '';
+ if (mo >= 2 && mo <= 4) msg = '🌞 Vrijeme je za ljetne gume (od ožujka do travnja). Rezervirajte termin prije gužve.';
+ else if (mo >= 9 && mo <= 11) msg = '❄️ Zimska oprema obvezna je od 15. studenog. Rezervirajte termin za zimske gume.';
+ if (msg) { document.getElementById('seasonTxt').textContent = msg; document.getElementById('season').classList.add('show'); }
+ window.SEASON = mo >= 2 && mo <= 4 ? 'ljetne' : (mo >= 9 && mo <= 11 ? 'zimske' : '');
+})();
+</script>
+<header class="navbar">
+ <div class="container nav-inner">
+  <a class="brand" href="#">Vulkanizer Primjer</a>
+  <button class="nav-toggle" aria-label="Izbornik" aria-expanded="false" aria-controls="nm"><span></span><span></span><span></span></button>
+  <nav class="nav-menu" id="nm" aria-label="Glavna navigacija"><a href="#usluge">Cjenik</a><a href="#podsjetnik">Podsjetnik</a><a href="#kontakt">Kontakt</a><a class="btn btn-brand" href="#rezervacija">Rezerviraj termin</a></nav>
+ </div>
+</header>
+
+<main>
+<section class="hero">
+ <div class="container hero-in">
+  <div>
+   <p class="kicker" style="color:#ffb703">Primjer d.o.o. · Primjer grad</p>
+   <h1>Zamjena guma <span>bez čekanja u redu.</span></h1>
+   <p>Rezervirajte termin online u 4 koraka. Dođete u dogovoreno vrijeme, mi ste gotovi za 30–45 minuta.</p>
+   <div class="hero-actions" style="margin-top:1rem"><a class="btn btn-brand" href="#rezervacija">Rezerviraj termin</a><a class="btn btn-line" href="tel:+385990000000">099 000 0000</a></div>
+  </div>
+  <ul class="usp"><li>✔ Rezervacija 24/7</li><li>✔ Gotovo za 30–45 min</li><li>✔ Fiksne cijene</li><li>✔ Pohrana guma</li></ul>
+ </div>
+</section>
+
+<section class="section section-alt" id="rezervacija">
+ <div class="container split">
+  <div>
+   <p class="kicker">Online rezervacija</p>
+   <h2 class="h2">Odaberite uslugu i termin</h2>
+   <p class="lead">Bez poziva i čekanja. Dobit ćete potvrdu s referentnom oznakom. (Demo: ništa se stvarno ne rezervira.)</p>
+   <ul style="display:grid;gap:.4rem;font-weight:700"><li>① Usluga</li><li>② Datum i termin</li><li>③ Vozilo i kontakt</li><li>④ Potvrda</li></ul>
+  </div>
+  <form class="book" id="book" novalidate aria-label="Rezervacija termina">
+   <ol class="progress" id="progress"><li>Usluga</li><li>Termin</li><li>Vozilo</li><li>Potvrda</li></ol>
+
+   <fieldset class="step" data-step="0" style="border:0">
+    <h3>1. Što trebate?</h3>
+    <div class="opts" id="svc"></div>
+    <p class="err" id="e0" role="alert"></p>
+   </fieldset>
+
+   <fieldset class="step" data-step="1" hidden style="border:0">
+    <h3>2. Kada vam odgovara?</h3>
+    <div class="form-group"><label for="date">Datum</label><input type="date" id="date"></div>
+    <p style="font-weight:700">Slobodni termini</p>
+    <div class="slots" id="slots" role="radiogroup" aria-label="Termini"></div>
+    <p class="err" id="e1" role="alert"></p>
+   </fieldset>
+
+   <fieldset class="step" data-step="2" hidden style="border:0">
+    <h3>3. Vozilo i kontakt</h3>
+    <div class="form-row">
+     <div class="form-group"><label for="reg">Registracija</label><input id="reg" placeholder="ZG 1234 AB" autocapitalize="characters" autocomplete="off" maxlength="11"></div>
+     <div class="form-group"><label for="car">Marka i model</label><input id="car" placeholder="npr. Primjer Model 1.6"></div>
+    </div>
+    <div class="form-row">
+     <div class="form-group"><label for="size">Dimenzija guma</label><select id="size"><option value="">Ne znam</option><option>15"</option><option>16"</option><option>17"</option><option>18"</option><option>19"+</option></select></div>
+     <div class="form-group"><label for="nm2">Ime i prezime</label><input id="nm2" autocomplete="name"></div>
+    </div>
+    <div class="form-group"><label for="tel">Telefon</label><input id="tel" type="tel" inputmode="tel" autocomplete="tel" placeholder="099 000 0000"></div>
+    <p class="err" id="e2" role="alert"></p>
+   </fieldset>
+
+   <fieldset class="step" data-step="3" hidden style="border:0">
+    <h3>4. Provjerite i potvrdite</h3>
+    <dl class="summary" id="summary"></dl>
+   </fieldset>
+
+   <div class="step ok" data-step="4" hidden>
+    <div class="tick" aria-hidden="true">✓</div>
+    <h3>Termin je rezerviran (demo)</h3>
+    <p id="okTxt"></p>
+    <span class="ref" id="ref"></span>
+    <p style="margin-top:1rem;color:var(--muted)">U pravoj stranici stigla bi i SMS/e-mail potvrda, a termin bi se pojavio u vašem kalendaru.</p>
+    <button class="btn btn-line" type="button" id="again" style="margin-top:1rem">Nova rezervacija</button>
+   </div>
+
+   <div class="nav-row" id="navRow">
+    <button type="button" class="btn btn-line" id="back" hidden>Natrag</button>
+    <button type="button" class="btn btn-brand" id="next">Dalje</button>
+   </div>
+  </form>
+ </div>
+</section>
+
+<section class="section" id="usluge">
+ <div class="container">
+  <p class="kicker">Cjenik usluga</p>
+  <h2 class="h2">Jasne cijene, bez iznenađenja</h2>
+  <p class="lead">Cijene su izmišljene i služe samo kao primjer. Cijena je po vozilu (4 kotača), PDV uključen.</p>
+  <div class="tablewrap"><table>
+   <thead><tr><th scope="col">Usluga</th><th scope="col">do 16"</th><th scope="col">17–18"</th><th scope="col">19"+ / SUV</th></tr></thead>
+   <tbody>
+    <tr><td>Zamjena guma na felgi</td><td>20 €</td><td>28 €</td><td>38 €</td></tr>
+    <tr><td>Skidanje guma s felge + montaža</td><td>32 €</td><td>44 €</td><td>60 €</td></tr>
+    <tr><td>Balansiranje (4 kom.)</td><td>12 €</td><td>16 €</td><td>22 €</td></tr>
+    <tr><td>Popravak probušene gume</td><td>8 €</td><td>10 €</td><td>12 €</td></tr>
+    <tr><td>Pohrana guma (sezona)</td><td>25 €</td><td>30 €</td><td>40 €</td></tr>
+   </tbody>
+  </table></div>
+ </div>
+</section>
+
+<section class="section section-dark" id="podsjetnik">
+ <div class="container split">
+  <div>
+   <p class="kicker">Sezonski podsjetnik</p>
+   <h2 class="h2" id="remH">Ne zaboravite zamijeniti gume</h2>
+   <p class="lead" id="remP">Javit ćemo vam se prije sezone zamjene, da u pravo vrijeme dobijete termin.</p>
+  </div>
+  <form id="remForm" style="max-width:480px">
+   <div class="form-group"><label for="rem">E-mail ili mobitel</label><input id="rem" required placeholder="vas@email.hr ili 099 000 0000" style="color:#111"></div>
+   <div class="form-group"><label for="remR">Registracija (neobavezno)</label><input id="remR" placeholder="ZG 1234 AB" style="color:#111"></div>
+   <button class="btn btn-accent btn-block" type="submit">Podsjeti me</button>
+   <p class="notice" id="remMsg" role="status" hidden></p>
+  </form>
+ </div>
+</section>
+
+<section class="section" id="kontakt">
+ <div class="container split">
+  <div><p class="kicker">Kontakt</p><h2 class="h2">Gdje smo i kad radimo</h2></div>
+  <ul style="display:grid;gap:.5rem;font-weight:700">
+   <li>📍 Primjer ulica 5, 10000 Primjer grad</li>
+   <li>📞 <a href="tel:+385990000000" style="text-decoration:underline">099 000 0000</a> (izmišljeni broj)</li>
+   <li>🕗 Pon–Pet 08:00–17:00, Sub 08:00–13:00</li>
+   <li style="font-weight:500;color:var(--muted)">U sezoni zamjene (ožujak–travanj, listopad–studeni) preporučujemo rezervaciju unaprijed.</li>
+  </ul>
+ </div>
+</section>
+</main>
+
+<footer class="footer"><div class="container">Vulkanizer Primjer d.o.o. · Primjer ulica 5, Primjer grad · Svi podaci i cijene su izmišljeni primjer.</div></footer>
+
+<nav class="sticky-cta" aria-label="Brzi kontakt">
+ <a class="btn btn-line" href="tel:+385990000000" style="color:#0f2a43"><svg class="ico"><use href="#i-phone"/></svg>Nazovi</a>
+ <a class="btn btn-brand" href="#rezervacija">Rezerviraj termin</a>
+</nav>
+
+<script src="../_shared/base.js"></script>
+<script>
+const SERVICES = [
+ ['zamjena','Zamjena guma (na felgi)','Skidanje i stavljanje kotača, balansiranje · ~30 min',28],
+ ['montaza','Skidanje s felge + montaža','Nove gume na vaše felge · ~45 min',44],
+ ['balans','Samo balansiranje','Za vibracije na volanu · ~20 min',16],
+ ['popravak','Popravak probušene gume','Zakrpa i provjera · ~20 min',10],
+ ['pohrana','Zamjena + pohrana guma','Gume čuvamo do sljedeće sezone · ~40 min',58]];
+const steps = [...document.querySelectorAll('.step')];
+const prog = [...document.querySelectorAll('#progress li')];
+const el = id => document.getElementById(id);
+const state = { svc: null, date: '', slot: '' };
+let cur = 0;
+el('svc').innerHTML = SERVICES.map(s => `<div class="opt"><input type="radio" name="svc" id="s-${s[0]}" value="${s[0]}"><label for="s-${s[0]}"><span>${s[1]}</span><span class="p">${s[3]} €</span><small>${s[2]}</small></label></div>`).join('');
+
+const dateEl = el('date');
+const iso = d => d.toISOString().slice(0, 10);
+const today = new Date(); dateEl.min = iso(today);
+const first = new Date(today); do { first.setDate(first.getDate() + 1); } while (first.getDay() === 0); dateEl.value = iso(first);
+
+function busy(dateStr, slot) { // deterministična "zauzetost" za demo
+  let h = 0; for (const c of dateStr + slot) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h % 5 === 0;
+}
+function renderSlots() {
+  const d = new Date(dateEl.value + 'T12:00'); const box = el('slots'); state.slot = '';
+  if (isNaN(d) || d.getDay() === 0) { box.innerHTML = '<p>Nedjeljom ne radimo. Odaberite drugi datum.</p>'; return; }
+  const end = d.getDay() === 6 ? 13 : 16.5; const out = [];
+  for (let m = 8 * 60; m < end * 60; m += 30) { const t = String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0'); out.push(t); }
+  box.innerHTML = out.map(t => `<div class="slot"><input type="radio" name="slot" id="t-${t.replace(':','')}" value="${t}" ${busy(dateEl.value, t) ? 'disabled' : ''}><label for="t-${t.replace(':','')}">${t}</label></div>`).join('');
+}
+dateEl.addEventListener('change', renderSlots); renderSlots();
+
+function show(n, scroll = true) {
+  cur = n; steps.forEach((s, i) => { s.hidden = i !== n; });
+  prog.forEach((p, i) => { p.className = i === n ? 'on' : i < n ? 'done' : ''; });
+  el('back').hidden = n === 0 || n === 4; el('navRow').hidden = n === 4;
+  el('next').textContent = n === 3 ? 'Potvrdi rezervaciju' : 'Dalje';
+  if (n === 3) summary();
+  if (scroll) el('book').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+const fmtDate = s => new Date(s + 'T12:00').toLocaleDateString('hr-HR', { weekday: 'long', day: 'numeric', month: 'long' });
+function summary() {
+  const s = SERVICES.find(x => x[0] === state.svc);
+  el('summary').innerHTML = [['Usluga', s[1]], ['Termin', fmtDate(state.date) + ', ' + state.slot], ['Vozilo', (el('reg').value.toUpperCase() || '-') + (el('car').value ? ' · ' + el('car').value : '')], ['Kontakt', el('nm2').value + ', ' + el('tel').value], ['Cijena od', s[3] + ' €']].map(r => `<div><dt>${r[0]}</dt><dd>${r[1]}</dd></div>`).join('');
+}
+function validate(n) {
+  ['e0', 'e1', 'e2'].forEach(i => el(i).textContent = '');
+  if (n === 0) { const v = document.querySelector('input[name=svc]:checked'); if (!v) { el('e0').textContent = 'Odaberite uslugu.'; return false; } state.svc = v.value; }
+  if (n === 1) { const v = document.querySelector('input[name=slot]:checked'); if (!v) { el('e1').textContent = 'Odaberite slobodan termin.'; return false; } state.slot = v.value; state.date = dateEl.value; }
+  if (n === 2) {
+    if (!/^[A-ZČĆŽŠĐ]{2}\s?\d{3,4}\s?[A-Z]{1,2}$/i.test(el('reg').value.trim())) { el('e2').textContent = 'Unesite registraciju u obliku ZG 1234 AB.'; el('reg').focus(); return false; }
+    if (el('nm2').value.trim().length < 2) { el('e2').textContent = 'Unesite ime i prezime.'; el('nm2').focus(); return false; }
+    if (!/^[+\d][\d\s/-]{6,}$/.test(el('tel').value.trim())) { el('e2').textContent = 'Unesite ispravan broj telefona.'; el('tel').focus(); return false; }
+  }
+  return true;
+}
+el('next').addEventListener('click', () => {
+  if (!validate(cur)) return;
+  if (cur < 3) { show(cur + 1); return; }
+  const ref = 'VK-' + Math.random().toString(36).slice(2, 7).toUpperCase();
+  const booking = { ref, svc: state.svc, date: state.date, slot: state.slot, reg: el('reg').value.toUpperCase() };
+  try { localStorage.setItem('demo-vulkanizer-booking', JSON.stringify(booking)); } catch (e) {}
+  el('okTxt').textContent = `${fmtDate(state.date)} u ${state.slot}, vozilo ${booking.reg}.`; el('ref').textContent = ref; show(4);
+});
+el('back').addEventListener('click', () => show(cur - 1));
+el('again').addEventListener('click', () => { el('book').reset(); state.svc = null; renderSlots(); show(0); });
+
+if (window.SEASON) el('remH').textContent = (SEASON === 'ljetne' ? 'Ljetne' : 'Zimske') + ' gume: javimo vam se na vrijeme';
+demoSubmit(el('remForm'), el('remMsg'), 'Spremljeno (demo). Podsjetit ćemo vas prije sljedeće sezone zamjene.');
+show(0, false);
+</script>
+</body>
+</html>

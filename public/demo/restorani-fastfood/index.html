@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#1a1411">
+<title>Primjer: Burger &amp; Kebab Kuća | Demo stranica za restoran</title>
+<meta name="description" content="Demo primjer web stranice za restoran, burger i kebab objekt. Izmišljeni podaci.">
+<link rel="stylesheet" href="../_shared/base.css">
+<style>
+:root { --brand: #c8281c; --accent: #ffb81c; --dark: #1a1411; --surface: #f7f1e8; --bg: #fffdf9; --font-display: Impact, "Arial Narrow Bold", "Segoe UI", system-ui, sans-serif; }
+.brand, .h2, .hero h1 { text-transform: uppercase; letter-spacing: .01em; }
+.hero { position: relative; color: #fff; background: radial-gradient(120% 90% at 85% 10%, #e5481e 0%, #b3200f 40%, #2a120c 100%); overflow: hidden; }
+.hero::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(135deg, rgba(255,255,255,.05) 0 14px, transparent 14px 28px); }
+.hero-in { position: relative; display: grid; gap: 1.5rem; padding-block: 2.5rem 3rem; }
+.hero h1 { font-family: var(--font-display); font-size: clamp(2.6rem, 1.4rem + 6vw, 5.4rem); line-height: .95; font-weight: 400; max-width: 11ch; }
+.hero h1 span { color: var(--accent); display: block; }
+.hero p { max-width: 42ch; font-size: 1.1rem; color: #ffe9d6; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+.hero-actions .btn { flex: 1 1 170px; }
+.hero-art { display: none; }
+.badges { display: flex; flex-wrap: wrap; gap: .5rem; }
+.badges li { background: rgba(0,0,0,.28); padding: .35rem .8rem; border-radius: 99px; font-size: .88rem; font-weight: 700; }
+.tabs { display: flex; gap: .5rem; overflow-x: auto; padding-bottom: .5rem; margin-bottom: 1rem; scrollbar-width: none; position: sticky; top: var(--nav-h); background: var(--bg); z-index: 5; padding-top: .5rem; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { flex: none; min-height: 44px; padding: .5rem 1.1rem; border-radius: 99px; border: 2px solid var(--dark); background: transparent; font-weight: 800; cursor: pointer; }
+.tab[aria-selected="true"] { background: var(--dark); color: #fff; }
+.menu { display: grid; gap: .75rem; }
+.dish { display: grid; grid-template-columns: 84px 1fr auto; gap: .9rem; align-items: center; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: .7rem; }
+.dish .ph { aspect-ratio: 1; padding: 0; border-radius: 10px; }
+.dish .ph::after { display: none; }
+.dish .ph svg { width: 56%; margin: 0; }
+.dish h3 { font-size: 1.05rem; font-weight: 800; line-height: 1.25; }
+.dish p { color: var(--muted); font-size: .88rem; line-height: 1.4; margin-top: .15rem; }
+.dish .price { font-weight: 900; font-size: 1.1rem; white-space: nowrap; text-align: right; }
+.add { margin-top: .35rem; min-height: 44px; min-width: 44px; border: 0; border-radius: 99px; background: var(--brand); color: #fff; font-weight: 900; font-size: 1.3rem; cursor: pointer; }
+.cart { position: fixed; inset: auto 0 calc(var(--sticky-h) + env(safe-area-inset-bottom)) 0; z-index: 850; margin: 0 var(--gutter); background: var(--dark); color: #fff; border-radius: 16px; padding: .6rem .6rem .6rem 1rem; display: flex; align-items: center; justify-content: space-between; gap: .75rem; box-shadow: 0 8px 28px rgba(0,0,0,.35); }
+.cart[hidden] { display: none; }
+.cart b { color: var(--accent); }
+.hours { display: grid; gap: .25rem; max-width: 420px; }
+.hours li { display: flex; justify-content: space-between; padding: .6rem .9rem; border-radius: 10px; background: rgba(255,255,255,.07); }
+.hours li.today { background: var(--accent); color: #111; font-weight: 800; }
+.split { display: grid; gap: 1.75rem; }
+.map { aspect-ratio: 4 / 3; border-radius: var(--radius); background-color: #e9e1d2; background-image: repeating-linear-gradient(90deg, transparent 0 59px, #cfc4ae 59px 60px), repeating-linear-gradient(0deg, transparent 0 59px, #cfc4ae 59px 60px); position: relative; }
+.map::after { content: "Primjer: karta"; position: absolute; left: .6rem; top: .6rem; font-size: .75rem; background: rgba(0,0,0,.5); color: #fff; padding: .1rem .5rem; border-radius: 99px; }
+.map svg { position: absolute; left: 50%; top: 50%; width: 44px; transform: translate(-50%, -100%); color: var(--brand); }
+.gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: .5rem; }
+.dialog-bg { position: fixed; inset: 0; z-index: 2000; background: rgba(0,0,0,.6); display: grid; place-items: end center; }
+.dialog-bg[hidden] { display: none; }
+.dialog { width: 100%; max-width: 480px; max-height: 92svh; overflow: auto; background: #fff; border-radius: 20px 20px 0 0; padding: 1.25rem var(--gutter) calc(1.25rem + env(safe-area-inset-bottom)); }
+.dialog h3 { font-size: 1.3rem; margin-bottom: .75rem; }
+.close { float: right; width: 48px; height: 48px; margin: -.5rem -.75rem 0 0; border: 0; background: none; font-size: 2rem; cursor: pointer; }
+.order-line { display: flex; justify-content: space-between; gap: 1rem; padding: .5rem 0; border-bottom: 1px solid var(--line); }
+.total { display: flex; justify-content: space-between; font-weight: 900; font-size: 1.2rem; padding: .8rem 0; }
+@media (min-width: 600px) { .menu { grid-template-columns: 1fr 1fr; } .gallery { grid-template-columns: repeat(3, 1fr); } .dialog-bg { place-items: center; } .dialog { border-radius: 20px; } }
+@media (min-width: 900px) { .hero-in { grid-template-columns: 1.2fr .8fr; align-items: center; padding-block: 5rem; } .hero-art { display: block; } .split { grid-template-columns: 1fr 1fr; gap: 3rem; } .cart { left: auto; right: var(--gutter); bottom: 1.5rem; width: 360px; margin: 0; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+ <symbol id="s-burger" viewBox="0 0 64 64"><path d="M8 28c0-12 10-18 24-18s24 6 24 18z" fill="currentColor"/><rect x="6" y="32" width="52" height="6" rx="3" fill="currentColor" opacity=".7"/><path d="M6 42h52v4a8 8 0 0 1-8 8H14a8 8 0 0 1-8-8z" fill="currentColor"/></symbol>
+ <symbol id="s-kebab" viewBox="0 0 64 64"><path d="M10 50 26 14c6-4 18 0 28 10L34 56c-8 2-18-2-24-6z" fill="currentColor"/><path d="M20 40c6 2 12 0 20-8" stroke="#0004" stroke-width="3" fill="none"/></symbol>
+ <symbol id="s-fries" viewBox="0 0 64 64"><path d="M14 22h36l-4 34H18z" fill="currentColor"/><path d="M18 22 16 8M26 22l-1-16M34 22V6M42 22l2-16M48 22l3-12" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></symbol>
+ <symbol id="s-cup" viewBox="0 0 64 64"><path d="M16 14h32l-4 42H20z" fill="currentColor"/><path d="M32 14V4l12-2" stroke="currentColor" stroke-width="4" fill="none" stroke-linecap="round"/></symbol>
+ <symbol id="s-pin" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 5.3 7 13 7 13s7-7.7 7-13a7 7 0 0 0-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" fill="currentColor"/></symbol>
+ <symbol id="s-phone" viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+</svg>
+
+<div class="demo-bar"><span><b>PRIMJER</b>Demo stranica s izmišljenim podacima</span><a href="../">&larr; Svi primjeri</a></div>
+
+<header class="navbar">
+ <div class="container nav-inner">
+  <a class="brand" href="#">Burger &amp; Kebab Kuća</a>
+  <button class="nav-toggle" aria-label="Izbornik" aria-expanded="false" aria-controls="nm"><span></span><span></span><span></span></button>
+  <nav class="nav-menu" id="nm" aria-label="Glavna navigacija">
+   <a href="#jelovnik">Jelovnik</a><a href="#galerija">Galerija</a><a href="#radno-vrijeme">Radno vrijeme</a><a href="#rezervacija">Rezerviraj stol</a>
+   <a class="btn btn-accent" href="#jelovnik">Naruči</a>
+  </nav>
+ </div>
+</header>
+
+<main>
+<section class="hero">
+ <div class="container hero-in">
+  <div>
+   <p class="kicker" style="color:var(--accent)">Primjer d.o.o. · Primjer grad</p>
+   <h1>Sočno. Vruće. <span>Do vrata za 30 min.</span></h1>
+   <p>Ručno oblikovani burgeri, kebab s domaćim lepinjama i prilozi koji se ne ostavljaju na tanjuru.</p>
+   <div class="hero-actions" style="margin-top:1.25rem">
+    <a class="btn btn-accent" href="#jelovnik">Naruči odmah</a>
+    <a class="btn btn-line" href="#rezervacija">Rezerviraj stol</a>
+   </div>
+   <ul class="badges" style="margin-top:1.25rem"><li>★ 4,8 (primjer)</li><li>Dostava 30 min</li><li>Dostupno za van</li></ul>
+  </div>
+  <div class="hero-art" aria-hidden="true"><svg viewBox="0 0 64 64" style="color:#ffcf6b;width:100%;max-width:340px;margin:auto;filter:drop-shadow(0 20px 30px rgba(0,0,0,.4))"><use href="#s-burger"/></svg></div>
+ </div>
+</section>
+
+<section class="section" id="jelovnik">
+ <div class="container">
+  <p class="kicker">Jelovnik</p>
+  <h2 class="h2">Što će biti danas?</h2>
+  <div class="tabs" role="tablist" aria-label="Kategorije jelovnika" id="tabs"></div>
+  <div class="menu" id="menu" role="tabpanel"></div>
+ </div>
+</section>
+
+<section class="section section-dark" id="galerija">
+ <div class="container">
+  <p class="kicker">Galerija jela</p>
+  <h2 class="h2">Izgleda jednako dobro kao što je okusa</h2>
+  <p class="lead">Placeholderi: ovdje dolaze prave fotografije vašeg objekta i jela.</p>
+  <div class="gallery" id="gallery"></div>
+ </div>
+</section>
+
+<section class="section section-dark" id="radno-vrijeme" style="padding-top:0">
+ <div class="container split">
+  <div>
+   <p class="kicker">Radno vrijeme</p>
+   <h2 class="h2">Otvoreni smo do kasno</h2>
+   <ul class="hours" id="hours"></ul>
+  </div>
+  <div>
+   <p class="kicker">Lokacija</p>
+   <h2 class="h2">Pronađite nas</h2>
+   <div class="map"><svg viewBox="0 0 24 24"><use href="#s-pin"/></svg></div>
+   <p style="margin-top:.75rem">Primjer ulica 12, 10000 Primjer grad<br><a href="tel:+385990000000" style="text-decoration:underline">099 000 0000</a> (izmišljeni broj)</p>
+  </div>
+ </div>
+</section>
+
+<section class="section" id="rezervacija">
+ <div class="container split">
+  <div>
+   <p class="kicker">Rezervacija</p>
+   <h2 class="h2">Rezerviraj stol</h2>
+   <p class="lead">Odaberite datum, vrijeme i broj osoba. Potvrdu šaljemo odmah. (Demo: ništa se ne šalje.)</p>
+  </div>
+  <form id="resForm">
+   <div class="form-row">
+    <div class="form-group"><label for="rd">Datum</label><input id="rd" type="date" required></div>
+    <div class="form-group"><label for="rt">Vrijeme</label><select id="rt" required><option value="">Odaberite</option><option>12:00</option><option>13:00</option><option>14:00</option><option>18:00</option><option>19:00</option><option>20:00</option><option>21:00</option></select></div>
+   </div>
+   <div class="form-row">
+    <div class="form-group"><label for="rp">Broj osoba</label><select id="rp" required><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7+</option></select></div>
+    <div class="form-group"><label for="rn">Ime</label><input id="rn" autocomplete="name" required></div>
+   </div>
+   <div class="form-group"><label for="rph">Telefon</label><input id="rph" type="tel" inputmode="tel" autocomplete="tel" required></div>
+   <button class="btn btn-brand btn-block" type="submit">Rezerviraj</button>
+   <p class="notice" id="resMsg" role="status" hidden></p>
+  </form>
+ </div>
+</section>
+</main>
+
+<footer class="footer"><div class="container">
+ <strong style="color:#fff">Burger &amp; Kebab Kuća (primjer)</strong><br>Primjer ulica 12, Primjer grad · 099 000 0000 · Sve slike, imena i cijene su izmišljeni primjer.
+</div></footer>
+
+<button class="cart" id="cart" hidden><span><b id="cartCount">0</b> stavki · <b id="cartTotal">0,00 €</b></span><span class="btn btn-accent" style="min-height:44px;padding:.4rem 1.1rem">Naruči</span></button>
+<nav class="sticky-cta" aria-label="Brzi kontakt">
+ <a class="btn btn-brand" href="tel:+385990000000"><svg class="ico"><use href="#s-phone"/></svg>Nazovi</a>
+ <a class="btn btn-accent" href="#jelovnik">Naruči</a>
+ <a class="btn btn-line" href="#rezervacija" style="color:#111">Stol</a>
+</nav>
+
+<div class="dialog-bg" id="dlg" hidden>
+ <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlgT">
+  <button class="close" id="dlgX" aria-label="Zatvori">&times;</button>
+  <h3 id="dlgT">Vaša narudžba</h3>
+  <div id="orderLines"></div>
+  <div class="total"><span>Ukupno</span><span id="orderTotal"></span></div>
+  <form id="ordForm">
+   <div class="form-group"><label for="on">Ime</label><input id="on" autocomplete="name" required></div>
+   <div class="form-group"><label for="oa">Adresa dostave ili "preuzimanje"</label><input id="oa" autocomplete="street-address" required></div>
+   <button class="btn btn-brand btn-block" type="submit">Potvrdi narudžbu</button>
+  </form>
+  <p class="notice" id="ordMsg" role="status" hidden></p>
+ </div>
+</div>
+
+<script src="../_shared/base.js"></script>
+<script>
+const MENU = {
+ 'Burgeri': [
+  ['Klasik burger','Goveđa pljeskavica 180 g, cheddar, salata, rajčica, kiseli krastavci, domaći umak',7.9,'burger'],
+  ['Dupli sir burger','Dvije pljeskavice, dvostruki cheddar, karamelizirani luk, BBQ umak',10.5,'burger'],
+  ['Pileći crispy','Hrskavi pileći file, coleslaw, majoneza s limunom, brioche lepinja',8.2,'burger'],
+  ['Veggie burger','Pljeskavica od slanutka i leće, avokado, rukola, umak od jogurta',8.4,'burger']],
+ 'Kebab': [
+  ['Kebab u lepinji','Piletina ili junetina, svježe povrće, tzatziki ili ljuti umak',5.9,'kebab'],
+  ['Kebab tanjur','Meso, pomfrit, salata i dvije vrste umaka',9.5,'kebab'],
+  ['Durum wrap','Tanki wrap s mesom, kupusom, lukom i umakom od češnjaka',6.4,'kebab'],
+  ['Pljeskavica u lepinji','Pljeskavica s kajmakom i ajvarom',6.8,'kebab']],
+ 'Prilozi': [
+  ['Pomfrit','Hrskavi, posoljeni, uz umak po izboru',3.2,'fries'],
+  ['Batat pomfrit','Slatki krumpir s dimljenom paprikom',4.2,'fries'],
+  ['Onion rings','Panirani kolutići luka',3.9,'fries'],
+  ['Coleslaw','Salata od kupusa i mrkve',2.4,'fries']],
+ 'Pića': [
+  ['Gazirano 0,33 l','Cola, naranča ili limun',2.2,'cup'],
+  ['Domaća limunada','Svježi limun, metvica',3.4,'cup'],
+  ['Ayran','Kefir s prstohvatom soli',2.0,'cup'],
+  ['Milkshake','Vanilija, čokolada ili jagoda',4.5,'cup']]
+};
+const COL = {burger:['#d9822b','#8f3a12'], kebab:['#c4452d','#6b1d12'], fries:['#e6a82d','#a8601a'], cup:['#3a8db5','#1f4f73']};
+const eur = n => n.toFixed(2).replace('.', ',') + ' €';
+const cart = {};
+const tabs = document.getElementById('tabs'), menu = document.getElementById('menu');
+let cur = Object.keys(MENU)[0];
+function renderTabs() { tabs.innerHTML = Object.keys(MENU).map(k => `<button class="tab" role="tab" aria-selected="${k===cur}" data-k="${k}">${k}</button>`).join(''); }
+function renderMenu() {
+ menu.innerHTML = MENU[cur].map((d,i) => `<article class="dish"><div class="ph" style="--a:${COL[d[3]][0]};--b:${COL[d[3]][1]}" aria-hidden="true"><svg viewBox="0 0 64 64"><use href="#s-${d[3]}"/></svg></div><div><h3>${d[0]}</h3><p>${d[1]}</p></div><div class="price">${eur(d[2])}<br><button class="add" data-k="${cur}" data-i="${i}" aria-label="Dodaj ${d[0]} u narudžbu">+</button></div></article>`).join('');
+}
+tabs.addEventListener('click', e => { const b = e.target.closest('.tab'); if (b) { cur = b.dataset.k; renderTabs(); renderMenu(); } });
+menu.addEventListener('click', e => {
+ const b = e.target.closest('.add'); if (!b) return;
+ const d = MENU[b.dataset.k][b.dataset.i]; cart[d[0]] = cart[d[0]] || {n: 0, p: d[2]}; cart[d[0]].n++; updateCart();
+});
+function totals() { let n = 0, t = 0; for (const k in cart) { n += cart[k].n; t += cart[k].n * cart[k].p; } return [n, t]; }
+function updateCart() { const [n, t] = totals(); document.getElementById('cart').hidden = n === 0; document.getElementById('cartCount').textContent = n; document.getElementById('cartTotal').textContent = eur(t); }
+const dlg = document.getElementById('dlg');
+document.getElementById('cart').addEventListener('click', () => {
+ document.getElementById('orderLines').innerHTML = Object.entries(cart).map(([k, v]) => `<div class="order-line"><span>${v.n} × ${k}</span><span>${eur(v.n * v.p)}</span></div>`).join('');
+ document.getElementById('orderTotal').textContent = eur(totals()[1]);
+ document.getElementById('ordMsg').hidden = true; dlg.hidden = false; document.getElementById('dlgX').focus();
+});
+const closeDlg = () => { dlg.hidden = true; };
+document.getElementById('dlgX').addEventListener('click', closeDlg);
+dlg.addEventListener('click', e => { if (e.target === dlg) closeDlg(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !dlg.hidden) closeDlg(); });
+document.getElementById('ordForm').addEventListener('submit', e => {
+ e.preventDefault(); const f = e.target; if (!f.checkValidity()) { f.reportValidity(); return; }
+ const m = document.getElementById('ordMsg'); m.textContent = 'Hvala! (demo) Narudžba je zaprimljena, dostava za otprilike 30 min.'; m.hidden = false;
+ for (const k in cart) delete cart[k]; updateCart(); f.reset();
+});
+// Radno vrijeme + označi današnji dan
+const days = ['Nedjelja','Ponedjeljak','Utorak','Srijeda','Četvrtak','Petak','Subota'];
+const hrs = {1:'11:00 – 22:00',2:'11:00 – 22:00',3:'11:00 – 22:00',4:'11:00 – 23:00',5:'11:00 – 00:00',6:'12:00 – 00:00',0:'12:00 – 21:00'};
+document.getElementById('hours').innerHTML = [1,2,3,4,5,6,0].map(d => `<li class="${d===new Date().getDay()?'today':''}"><span>${days[d]}</span><span>${hrs[d]}</span></li>`).join('');
+// Galerija
+const G = [['Klasik burger','burger'],['Kebab','kebab'],['Pomfrit','fries'],['Dupli burger','burger'],['Durum','kebab'],['Milkshake','cup']];
+document.getElementById('gallery').innerHTML = G.map(g => `<div class="ph" style="--a:${COL[g[1]][0]};--b:${COL[g[1]][1]}"><div><svg viewBox="0 0 64 64"><use href="#s-${g[1]}"/></svg>${g[0]}</div></div>`).join('');
+// Rezervacija
+const rd = document.getElementById('rd'); rd.min = new Date().toISOString().slice(0, 10);
+demoSubmit(document.getElementById('resForm'), document.getElementById('resMsg'), 'Hvala! (demo) Stol je rezerviran, potvrdu bismo poslali SMS-om.');
+renderTabs(); renderMenu();
+</script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#111827">
+<title>Demo web stranice za male tvrtke | Primjeri</title>
+<meta name="description" content="Tri demo primjera web stranica za male tvrtke: restoran, vulkanizer i obrtnik. Svi podaci su izmišljeni.">
+<link rel="stylesheet" href="_shared/base.css">
+<style>
+:root { --brand: #2563eb; --dark: #111827; --surface: #f3f4f6; --font-display: "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif; }
+body { background: var(--surface); padding-bottom: 0; }
+.top { background: var(--dark); color: #fff; padding-block: clamp(2.5rem, 2rem + 4vw, 5rem); }
+.top h1 { font-family: var(--font-display); font-size: var(--fs-h1); line-height: 1.05; letter-spacing: -.02em; font-weight: 900; max-width: 16ch; }
+.top p { margin-top: 1rem; max-width: 52ch; color: #cbd5e1; font-size: 1.1rem; }
+.grid { display: grid; gap: 1.25rem; padding-block: 2rem 3rem; }
+.demo { display: flex; flex-direction: column; background: #fff; border-radius: 20px; overflow: hidden; border: 1px solid #e5e7eb; }
+.art { aspect-ratio: 16 / 9; display: grid; place-items: center; color: #fff; font-size: 3.4rem; position: relative; }
+.art::after { content: "Primjer"; position: absolute; top: .7rem; left: .7rem; font-size: .72rem; font-weight: 700; background: rgba(0,0,0,.5); padding: .15rem .6rem; border-radius: 99px; }
+.demo-body { padding: 1.25rem; display: flex; flex-direction: column; gap: .5rem; flex: 1; }
+.demo-body h2 { font-size: 1.35rem; font-weight: 900; }
+.demo-body p { color: var(--muted); }
+.demo-body ul { color: var(--muted); font-size: .92rem; display: grid; gap: .15rem; margin: .25rem 0 .75rem; }
+.demo-body ul li::before { content: "✓ "; color: #16a34a; font-weight: 900; }
+.actions { display: grid; grid-template-columns: 1fr auto; gap: .5rem; margin-top: auto; }
+.btn-dark { background: var(--dark); color: #fff; }
+.copy { border-color: #cbd5e1; color: var(--ink); background: #fff; padding-inline: 1rem; }
+.sub { text-align: center; color: var(--muted); font-size: .9rem; padding-bottom: 2rem; }
+@media (min-width: 800px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+</style>
+</head>
+<body>
+<header class="top">
+ <div class="container">
+  <p class="kicker" style="color:#93c5fd">Primjeri web stranica</p>
+  <h1>Tri stranice koje donose upite</h1>
+  <p>Brze, prilagođene mobitelu i s jasnim pozivom na akciju. Odaberite djelatnost najbližu vašoj. Svi nazivi, cijene i fotografije su izmišljeni primjer.</p>
+ </div>
+</header>
+<main class="container">
+ <div class="grid">
+  <article class="demo">
+   <div class="art" style="background:linear-gradient(135deg,#e5481e,#7a1a0e)" aria-hidden="true">🍔</div>
+   <div class="demo-body">
+    <h2>Restoran / fast food</h2>
+    <p>Burger i kebab objekt s narudžbom i rezervacijom stola.</p>
+    <ul><li>Jelovnik po kategorijama</li><li>Naruči i Rezerviraj stol</li><li>Radno vrijeme i lokacija</li></ul>
+    <div class="actions"><a class="btn btn-dark" href="restorani-fastfood/">Otvori primjer</a><button class="btn btn-line copy" data-path="restorani-fastfood/" type="button">Kopiraj link</button></div>
+   </div>
+  </article>
+  <article class="demo">
+   <div class="art" style="background:linear-gradient(135deg,#16476f,#0f2a43)" aria-hidden="true">🛞</div>
+   <div class="demo-body">
+    <h2>Vulkanizer</h2>
+    <p>Online rezervacija termina za zamjenu guma u 4 koraka.</p>
+    <ul><li>Usluga, datum i termin</li><li>Registracija vozila i potvrda</li><li>Cjenik i sezonski podsjetnik</li></ul>
+    <div class="actions"><a class="btn btn-dark" href="vulkanizer/">Otvori primjer</a><button class="btn btn-line copy" data-path="vulkanizer/" type="button">Kopiraj link</button></div>
+   </div>
+  </article>
+  <article class="demo">
+   <div class="art" style="background:linear-gradient(135deg,#9a5b1f,#2b2118)" aria-hidden="true">🛠️</div>
+   <div class="demo-body">
+    <h2>Obrtnik</h2>
+    <p>Frizer, električar ili stolar: jedan predložak, tri izgleda.</p>
+    <ul><li>Usluge i galerija radova</li><li>Recenzije klijenata</li><li>Upit i zahtjev za termin</li></ul>
+    <div class="actions"><a class="btn btn-dark" href="obrt/">Otvori primjer</a><button class="btn btn-line copy" data-path="obrt/" type="button">Kopiraj link</button></div>
+   </div>
+  </article>
+ </div>
+ <p class="sub" id="copyMsg" role="status">&nbsp;</p>
+</main>
+<script src="_shared/base.js"></script>
+<script>
+document.querySelectorAll('.copy').forEach(b => b.addEventListener('click', async () => {
+ const url = new URL(b.dataset.path, location.href).href;
+ try { await navigator.clipboard.writeText(url); document.getElementById('copyMsg').textContent = 'Link kopiran: ' + url; }
+ catch (e) { document.getElementById('copyMsg').textContent = url; }
+}));
+</script>
+</body>
+</html>

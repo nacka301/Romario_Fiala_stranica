@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#2b2118">
+<title>Primjer: Obrt Primjer | Demo stranica za obrtnika</title>
+<meta name="description" content="Demo primjer web stranice za obrtnika (frizer, električar, stolar). Izmišljeni podaci.">
+<link rel="stylesheet" href="../_shared/base.css">
+<style>
+/* Zadana tema: stolar. JS postavlja varijable za frizera / električara */
+:root { --brand: #9a5b1f; --accent: #e9b872; --dark: #2b2118; --surface: #f6f0e8; --bg: #fffdf9; --ink: #1d1712; --muted: #5f5448; --line: #e5dccf; --font-display: Georgia, "Times New Roman", serif; }
+.btn-brand { background: var(--brand); color: #fff; }
+body:not(.ready) main { visibility: hidden; }
+.switch { background: #fff; border-bottom: 1px solid var(--line); }
+.switch-in { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; padding-block: .5rem; }
+.switch-in span { font-size: .85rem; font-weight: 700; color: var(--muted); white-space: nowrap; }
+.chip { flex: none; min-height: 44px; padding: .4rem 1rem; border-radius: 99px; border: 2px solid var(--line); background: #fff; font-weight: 800; cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--dark); border-color: var(--dark); color: #fff; }
+.hero { position: relative; color: #fff; background: linear-gradient(150deg, var(--dark) 0%, var(--hero2, #5a3a1e) 100%); overflow: hidden; }
+.hero::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(60deg, rgba(255,255,255,.04) 0 2px, transparent 2px 22px); }
+.hero-in { position: relative; padding-block: 2.75rem 3.25rem; display: grid; gap: 1.25rem; }
+.hero h1 { font-family: var(--font-display); font-size: var(--fs-h1); line-height: 1.06; font-weight: 700; max-width: 16ch; text-wrap: balance; }
+.hero p { max-width: 46ch; font-size: 1.1rem; opacity: .92; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+.hero-actions .btn { flex: 1 1 170px; }
+.hero .btn-brand { background: var(--accent); color: #111; }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; text-align: center; }
+.stats li { background: rgba(255,255,255,.1); border-radius: 12px; padding: .7rem .4rem; }
+.stats b { display: block; font-size: 1.5rem; font-family: var(--font-display); color: var(--accent); }
+.stats small { font-size: .78rem; }
+.svc-ico { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 14px; background: var(--surface); color: var(--brand); font-size: 1.6rem; margin-bottom: .6rem; }
+.card .price { display: inline-block; margin-top: .5rem; font-weight: 800; color: var(--brand); }
+.gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: .5rem; }
+.reviews { display: grid; gap: 1rem; }
+.review { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 1.1rem 1.2rem; }
+.stars { color: #e0a100; letter-spacing: 2px; }
+.review blockquote { margin: .4rem 0 .6rem; }
+.review footer { color: var(--muted); font-size: .9rem; font-weight: 700; }
+.split { display: grid; gap: 1.75rem; }
+.contact-form { background: #fff; border: 1px solid var(--line); border-radius: 20px; padding: clamp(1rem, .5rem + 2.5vw, 2rem); }
+.cinfo { display: grid; gap: .5rem; font-weight: 700; }
+.cinfo a { text-decoration: underline; }
+@media (min-width: 600px) { .gallery { grid-template-columns: repeat(3, 1fr); } .reviews { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 900px) { .hero-in { grid-template-columns: 1.2fr .8fr; align-items: center; padding-block: 5rem; } .split { grid-template-columns: .9fr 1.1fr; gap: 3rem; } .gallery { grid-template-columns: repeat(4, 1fr); } }
+</style>
+</head>
+<body>
+<div class="demo-bar"><span><b>PRIMJER</b>Demo stranica s izmišljenim podacima</span><a href="../">&larr; Svi primjeri</a></div>
+<div class="switch"><div class="container switch-in" role="group" aria-label="Odaberite djelatnost za pregled">
+ <span>Pogledaj kao:</span>
+ <button class="chip" data-t="frizer" aria-pressed="false">Frizer</button>
+ <button class="chip" data-t="elektricar" aria-pressed="false">Električar</button>
+ <button class="chip" data-t="stolar" aria-pressed="true">Stolar</button>
+</div></div>
+
+<header class="navbar">
+ <div class="container nav-inner">
+  <a class="brand" href="#" id="brand">Stolarija Primjer</a>
+  <button class="nav-toggle" aria-label="Izbornik" aria-expanded="false" aria-controls="nm"><span></span><span></span><span></span></button>
+  <nav class="nav-menu" id="nm" aria-label="Glavna navigacija"><a href="#usluge">Usluge</a><a href="#radovi">Radovi</a><a href="#recenzije">Recenzije</a><a href="#upit">Upit</a><a class="btn btn-brand" href="#upit" id="navCta">Zatraži ponudu</a></nav>
+ </div>
+</header>
+
+<main>
+<section class="hero">
+ <div class="container hero-in">
+  <div>
+   <p class="kicker" style="color:var(--accent)" id="kick">Obrt Primjer · Primjer grad</p>
+   <h1 id="h1"></h1>
+   <p id="sub"></p>
+   <div class="hero-actions" style="margin-top:1rem"><a class="btn btn-brand" href="#upit" id="heroCta"></a><a class="btn btn-line" href="tel:+385990000000">099 000 0000</a></div>
+  </div>
+  <ul class="stats" id="stats"></ul>
+ </div>
+</section>
+
+<section class="section" id="usluge">
+ <div class="container">
+  <p class="kicker">Usluge</p>
+  <h2 class="h2" id="svcH"></h2>
+  <div class="cards c3" id="svc"></div>
+ </div>
+</section>
+
+<section class="section section-alt" id="radovi">
+ <div class="container">
+  <p class="kicker">Galerija radova</p>
+  <h2 class="h2">Naši radovi</h2>
+  <p class="lead">Placeholderi: ovdje dolaze prave fotografije izvedenih radova.</p>
+  <div class="gallery" id="gal"></div>
+ </div>
+</section>
+
+<section class="section" id="recenzije">
+ <div class="container">
+  <p class="kicker">Recenzije</p>
+  <h2 class="h2">Što kažu klijenti</h2>
+  <p class="lead">Izmišljene recenzije za primjer. Na pravoj stranici stavljaju se stvarne recenzije klijenata.</p>
+  <div class="reviews" id="rev"></div>
+ </div>
+</section>
+
+<section class="section section-alt" id="upit">
+ <div class="container split">
+  <div>
+   <p class="kicker">Upit / termin</p>
+   <h2 class="h2" id="qH">Zatražite ponudu</h2>
+   <p class="lead">Opišite što trebate. Javljamo se isti dan. (Demo: ništa se ne šalje.)</p>
+   <ul class="cinfo"><li>📞 <a href="tel:+385990000000">099 000 0000</a> (izmišljeni broj)</li><li>✉️ info@primjer.example</li><li>📍 Primjer ulica 3, Primjer grad</li><li id="hrs">🕗 Pon–Pet 08:00–16:00</li></ul>
+  </div>
+  <form class="contact-form" id="form">
+   <div class="form-row">
+    <div class="form-group"><label for="n">Ime i prezime</label><input id="n" autocomplete="name" required></div>
+    <div class="form-group"><label for="t">Telefon</label><input id="t" type="tel" inputmode="tel" autocomplete="tel" required></div>
+   </div>
+   <div class="form-row">
+    <div class="form-group"><label for="s">Usluga</label><select id="s" required></select></div>
+    <div class="form-group"><label for="d" id="dl">Željeni datum</label><input id="d" type="date"></div>
+   </div>
+   <div class="form-group"><label for="m">Poruka</label><textarea id="m" placeholder="Kratko opišite što trebate"></textarea></div>
+   <button class="btn btn-brand btn-block" type="submit" id="send">Pošalji upit</button>
+   <p class="notice" id="msg" role="status" hidden></p>
+  </form>
+ </div>
+</section>
+</main>
+
+<footer class="footer"><div class="container">Obrt Primjer · Primjer ulica 3, Primjer grad · Svi podaci, recenzije i cijene su izmišljeni primjer.</div></footer>
+
+<nav class="sticky-cta" aria-label="Brzi kontakt">
+ <a class="btn btn-line" href="tel:+385990000000" style="color:#111">📞 Nazovi</a>
+ <a class="btn btn-brand" href="#upit" id="stickyCta">Zatraži ponudu</a>
+</nav>
+
+<script src="../_shared/base.js"></script>
+<script>
+const THEMES = {
+ stolar: {
+  vars: {'--brand':'#9a5b1f','--accent':'#e9b872','--dark':'#2b2118','--surface':'#f6f0e8','--bg':'#fffdf9','--ink':'#1d1712','--muted':'#5f5448','--line':'#e5dccf','--hero2':'#5a3a1e','--font-display':'Georgia, "Times New Roman", serif'},
+  brand:'Stolarija Primjer', kicker:'Stolarija Primjer · Primjer grad', h1:'Namještaj po mjeri, napravljen da traje', sub:'Kuhinje, ormari i drveni detalji izrađeni po vašoj mjeri. Od skice do ugradnje.', cta:'Zatraži ponudu', stats:[['15+','godina iskustva'],['300+','izvedenih projekata'],['5 god.','jamstvo']], svcH:'Što izrađujemo', icon:'🪵',
+  services:[['Kuhinje po mjeri','Projekt, izrada i ugradnja kuhinja s okovima visoke kvalitete.','od 1.200 €'],['Ugradbeni ormari','Klizna i krilna vrata, maksimalno iskorištenje prostora.','od 450 €'],['Stolovi i police','Masivno drvo, hrast i orah, završna obrada uljem.','od 90 €'],['Popravci i restauracija','Popravak i obnova starog namještaja.','po dogovoru']],
+  gal:[['Kuhinja u hrastu','#c8956a','#7a4a24'],['Ugradbeni ormar','#a9a9a0','#55554e'],['Blagovaonski stol','#b5835a','#6a4122'],['Polica od oraha','#8b5a3b','#3d2412'],['Dječja soba','#d4a76a','#8a5a2a'],['Garderoba','#9c8f80','#4d443a'],['Radni stol','#c39b6b','#6e4a28'],['Stube','#b07a4f','#5b3720']],
+  rev:[['Marko P.','Kuhinja je ispala bolje nego na nacrtu. Točni, uredni, ostavili su čisto.'],['Ivana K.','Ormar po mjeri za malu sobu, iskorišten je svaki centimetar. Preporuka.'],['Tomislav B.','Brza ponuda, rok održan, cijena kao što je dogovoreno.']],
+  dateLbl:'Željeni datum izmjere', hrs:'🕗 Pon–Pet 07:00–15:00', send:'Pošalji upit', ok:'Hvala! (demo) Upit je zaprimljen, javljamo se isti dan.' },
+ frizer: {
+  vars: {'--brand':'#b0305f','--accent':'#f4b6cf','--dark':'#2a1420','--surface':'#fbf0f4','--bg':'#fffafc','--ink':'#241019','--muted':'#6a4f5c','--line':'#efd9e2','--hero2':'#7a2349','--font-display':'"Palatino Linotype", Palatino, Georgia, serif'},
+  brand:'Salon Primjer', kicker:'Frizerski salon Primjer · Primjer grad', h1:'Frizura u kojoj se osjećate sjajno', sub:'Šišanje, bojanje i njega kose u opuštenoj atmosferi. Rezervirajte termin online.', cta:'Rezerviraj termin', stats:[['8+','godina iskustva'],['4,9★','prosječna ocjena'],['1 h','prosječan termin']], svcH:'Naše usluge', icon:'✂️',
+  services:[['Žensko šišanje','Pranje, šišanje i feniranje.','od 25 €'],['Muško šišanje i brada','Klasično šišanje, fade i oblikovanje brade.','od 12 €'],['Bojanje i balayage','Boja, pramenovi, toniranje uz njegu.','od 55 €'],['Njega i tretmani','Keratin, dubinska njega i svečane frizure.','od 30 €']],
+  gal:[['Balayage','#e9a3bd','#a53a68'],['Fade','#b9b3c9','#5a5272'],['Svečana frizura','#f0c3a3','#b5683a'],['Plavo','#f2d9a0','#b88a2a'],['Kovrče','#cf9aa8','#7a3a50'],['Bob','#a9a3b8','#4b4560'],['Dugačka kosa','#e1b199','#8d4f35'],['Brada','#9c9186','#4a4239']],
+  rev:[['Ana M.','Napokon netko tko sluša što želim. Boja je savršena, kosa zdrava.'],['Luka S.','Najbolji fade u gradu, a termin online za minutu.'],['Petra V.','Opuštena atmosfera i fantastičan rezultat. Dolazim redovito.']],
+  dateLbl:'Željeni datum termina', hrs:'🕗 Uto–Pet 09:00–19:00, Sub 08:00–14:00', send:'Zatraži termin', ok:'Hvala! (demo) Termin je zaprimljen, potvrdu šaljemo SMS-om.' },
+ elektricar: {
+  vars: {'--brand':'#0b6fb8','--accent':'#ffd23f','--dark':'#0e2233','--surface':'#eef5fb','--bg':'#fff','--ink':'#0d1b27','--muted':'#4a5d6e','--line':'#d6e2ec','--hero2':'#0b5a96','--font-display':'"Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif'},
+  brand:'Elektro Primjer', kicker:'Elektroinstalacije Primjer · Primjer grad', h1:'Sigurna struja u vašem domu', sub:'Instalacije, razvodne ploče, popravci kvarova i hitne intervencije. Licencirani majstori.', cta:'Zatraži ponudu', stats:[['24/7','hitni kvarovi'],['12+','godina iskustva'],['100%','atestirani radovi']], svcH:'Naše usluge', icon:'⚡',
+  services:[['Instalacije u novogradnji','Kompletno električno ožičenje s atestom.','po ponudi'],['Popravak kvarova','Dolazak isti dan, dijagnostika i popravak.','od 30 €'],['Razvodne ploče i osigurači','Zamjena i nadogradnja ploča, zaštita od prenapona.','od 120 €'],['Rasvjeta i pametna kuća','LED rasvjeta, senzori, punjači za EV.','od 40 €']],
+  gal:[['Razvodna ploča','#4aa3df','#0b4a7c'],['LED rasvjeta','#ffe073','#c79100'],['Punjač za auto','#66c6a4','#1b6b52'],['Ožičenje','#8ea4b8','#3a4d5f'],['Pametna kuća','#7a8fe0','#2d3a8a'],['Vanjska rasvjeta','#f0a35a','#a1520e'],['Utičnice','#9fb7c9','#44596b'],['Mjerenje','#8fd0d8','#2b6f78']],
+  rev:[['Davor H.','Kvar sam prijavio ujutro, struje sam imao do podne. Fer cijena.'],['Sanja R.','Nova ploča i svi radovi s atestom. Uredno i profesionalno.'],['Mario L.','Ugrađen punjač za auto, sve objašnjeno i dokumentirano.']],
+  dateLbl:'Željeni datum dolaska', hrs:'🕗 Pon–Pet 07:00–17:00 · hitno 24/7', send:'Pošalji upit', ok:'Hvala! (demo) Upit je zaprimljen, javljamo se u najkraćem roku.' }
+};
+const el = id => document.getElementById(id);
+function apply(key) {
+ const t = THEMES[key] || THEMES.stolar;
+ for (const [k, v] of Object.entries(t.vars)) document.documentElement.style.setProperty(k, v);
+ document.querySelector('meta[name=theme-color]').content = t.vars['--dark'];
+ el('brand').textContent = t.brand; el('kick').textContent = t.kicker; el('h1').textContent = t.h1; el('sub').textContent = t.sub;
+ el('heroCta').textContent = t.cta; el('navCta').textContent = t.cta; el('stickyCta').textContent = t.cta; el('svcH').textContent = t.svcH;
+ el('stats').innerHTML = t.stats.map(s => `<li><b>${s[0]}</b><small>${s[1]}</small></li>`).join('');
+ el('svc').innerHTML = t.services.map(s => `<article class="card"><div class="card-body"><div class="svc-ico" aria-hidden="true">${t.icon}</div><h3>${s[0]}</h3><p>${s[1]}</p><span class="price">${s[2]}</span></div></article>`).join('');
+ el('gal').innerHTML = t.gal.map(g => `<div class="ph ph-sq" style="--a:${g[1]};--b:${g[2]}"><span>${g[0]}</span></div>`).join('');
+ el('rev').innerHTML = t.rev.map(r => `<figure class="review"><div class="stars" aria-label="5 od 5 zvjezdica">★★★★★</div><blockquote>„${r[1]}“</blockquote><footer>${r[0]} (primjer)</footer></figure>`).join('');
+ el('s').innerHTML = '<option value="">Odaberite</option>' + t.services.map(s => `<option>${s[0]}</option>`).join('');
+ el('dl').textContent = t.dateLbl; el('hrs').textContent = t.hrs; el('send').textContent = t.send; el('form').dataset.ok = t.ok;
+ document.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', String(c.dataset.t === key)));
+ const u = new URL(location.href); u.searchParams.set('tema', key); history.replaceState(null, '', u);
+}
+document.querySelectorAll('.chip').forEach(c => c.addEventListener('click', () => apply(c.dataset.t)));
+const form = el('form');
+form.addEventListener('submit', e => {
+ e.preventDefault(); if (!form.checkValidity()) { form.reportValidity(); return; }
+ const m = el('msg'); m.textContent = form.dataset.ok; m.hidden = false; m.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); form.reset();
+});
+el('d').min = new Date().toISOString().slice(0, 10);
+apply(new URLSearchParams(location.search).get('tema') || 'stolar');
+document.body.classList.add('ready');
+</script>
+</body>
+</html>

@@ -4,6 +4,7 @@ Allow: /
 
 # Disallow admin or API routes if any
 Disallow: /api/
+Disallow: /demo/
 
 # Sitemap location
 Sitemap: https://fialamont.com/sitemap.xml
