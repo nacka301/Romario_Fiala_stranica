@@ -55,7 +55,7 @@ def main():
     logo.convert("RGB").save(PUB / "logo.png", optimize=True)
 
     # og-image 1200x630 iz postojece fotografije + tamni sloj + naziv
-    src = Image.open(ROOT / "public/images/posao_3/IMG-20251028-WA0014.jpg").convert("RGB")
+    src = Image.open(ROOT / "source-images/posao_3/IMG-20251028-WA0014.jpg").convert("RGB")
     tw, th = 1200, 630
     ratio = max(tw / src.width, th / src.height)
     src = src.resize((int(src.width * ratio) + 1, int(src.height * ratio) + 1), Image.LANCZOS)

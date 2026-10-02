@@ -4,13 +4,16 @@
 const SibApiV3Sdk = require('sib-api-v3-sdk');
 
 module.exports = async function handler(req, res) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+    if (req.method === 'OPTIONS') {
+        return res.status(204).end();
+    }
     if (req.method !== 'POST') {
         return res.status(405).json({ message: 'Method not allowed' });
     }
-
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'POST');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
     try {
         const { name, email, phone, service, message } = req.body;
@@ -80,7 +83,7 @@ module.exports = async function handler(req, res) {
                         </div>
                         <div class="field">
                             <div class="label">Email:</div>
-                            <div class="value"><a href="mailto:${email}">${safeEmail}</a></div>
+                            <div class="value"><a href="mailto:${safeEmail}">${safeEmail}</a></div>
                         </div>
                         <div class="field">
                             <div class="label">Telefon:</div>
@@ -128,6 +131,6 @@ Poslano: ${new Date().toLocaleString('hr-HR')}`;
     } catch (error) {
         console.error('Error:', error);
         console.error('Response:', error.response);
-        return res.status(500).json({ message: 'Greška prilikom slanja emaila.', debug: error.message });
+        return res.status(500).json({ message: 'Greška prilikom slanja emaila.' });
     }
 };

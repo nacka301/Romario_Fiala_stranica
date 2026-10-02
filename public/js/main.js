@@ -1,132 +1,119 @@
 // ==========================================
-// Navigation & Scroll Effects
+// Fiala Mont - glavna skripta
 // ==========================================
 
-// Mobile navigation toggle
+// Navigacija (mobilni izbornik)
 const navToggle = document.querySelector('.nav-toggle');
-const navMenu = document.querySelector('.nav-menu');
-const navLinks = document.querySelectorAll('.nav-link');
+const navMenu = document.getElementById('nav-menu');
+const navbar = document.getElementById('navbar');
 
-if (navToggle) {
-    navToggle.addEventListener('click', () => {
-        navToggle.classList.toggle('active');
-        navMenu.classList.toggle('active');
-    });
-
-    
-    // Close menu when clicking on a link
-    navLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            navToggle.classList.remove('active');
-            navMenu.classList.remove('active');
-        });
-    });
+function setMenu(open) {
+    navMenu.classList.toggle('open', open);
+    navToggle.setAttribute('aria-expanded', String(open));
 }
-// Navbar scroll effect
-const navbar = document.querySelector('.navbar');
-
-window.addEventListener('scroll', () => {
-    const currentScroll = window.pageYOffset;
-    
-    if (currentScroll > 100) {
-        navbar.classList.add('scrolled');
-    } else {
-        navbar.classList.remove('scrolled');
-    }
+navToggle?.addEventListener('click', () => setMenu(navToggle.getAttribute('aria-expanded') !== 'true'));
+navMenu?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && navMenu.classList.contains('open')) { setMenu(false); navToggle.focus(); }
 });
 
-// Active nav link on scroll
-const sections = document.querySelectorAll('section[id]');
+// Aktivni link prema sekciji
+const navLinks = [...document.querySelectorAll('.nav-link')];
+const sectionObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        navLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === `#${entry.target.id}`));
+    });
+}, { rootMargin: '-40% 0px -55% 0px' });
+navLinks.forEach(l => {
+    const target = document.querySelector(l.getAttribute('href'));
+    if (target) sectionObserver.observe(target);
+});
 
-function activateNavLink() {
-    const scrollY = window.pageYOffset;
-    
-    sections.forEach(section => {
-        const sectionHeight = section.offsetHeight;
-        const sectionTop = section.offsetTop - 100;
-        const sectionId = section.getAttribute('id');
-        const navLink = document.querySelector(`.nav-link[href="#${sectionId}"]`);
-        
-        if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
-            navLink?.classList.add('active');
-        } else {
-            navLink?.classList.remove('active');
-        }
+// Galerija: "Prikaži više"
+const galleryMore = document.getElementById('galleryMore');
+const extras = document.querySelectorAll('#galleryGrid [data-extra]');
+if (galleryMore) {
+    if (!extras.length) galleryMore.hidden = true;
+    galleryMore.addEventListener('click', () => {
+        const expanded = galleryMore.getAttribute('aria-expanded') === 'true';
+        extras.forEach(el => { el.hidden = expanded; });
+        galleryMore.setAttribute('aria-expanded', String(!expanded));
+        galleryMore.textContent = expanded ? 'Prikaži više radova' : 'Prikaži manje';
     });
 }
 
-window.addEventListener('scroll', activateNavLink);
-
-// ==========================================
-// Gallery Lightbox
-// ==========================================
-
-const galleryItems = document.querySelectorAll('.gallery-item');
+// Lightbox
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightbox-img');
-const lightboxCaption = document.querySelector('.lightbox-caption');
-const lightboxClose = document.querySelector('.lightbox-close');
+let lbIndex = 0;
+let lbOpener = null;
 
-galleryItems.forEach(item => {
-    item.addEventListener('click', () => {
-        const img = item.querySelector('img');
-        const caption = item.querySelector('.gallery-overlay span');
-        
-        lightbox.classList.add('active');
-        lightboxImg.src = img.src;
-        lightboxImg.alt = img.alt;
-        if (caption) {
-            lightboxCaption.textContent = caption.textContent;
-        }
-        
-        // Prevent body scroll when lightbox is open
-        document.body.style.overflow = 'hidden';
-    });
-});
+const visibleButtons = () => [...document.querySelectorAll('#galleryGrid .gallery-item:not([hidden]) .gallery-btn')];
 
+function showLightbox(i) {
+    const btns = visibleButtons();
+    lbIndex = (i + btns.length) % btns.length;
+    const btn = btns[lbIndex];
+    lightboxImg.src = btn.dataset.full;
+    lightboxImg.alt = btn.querySelector('img').alt;
+}
+function openLightbox(btn) {
+    lbOpener = btn;
+    lightbox.hidden = false;
+    document.body.style.overflow = 'hidden';
+    showLightbox(visibleButtons().indexOf(btn));
+    lightbox.querySelector('.lightbox-close').focus();
+}
 function closeLightbox() {
-    lightbox.classList.remove('active');
+    lightbox.hidden = true;
+    lightboxImg.removeAttribute('src');
     document.body.style.overflow = '';
+    lbOpener?.focus();
 }
-
-if (lightboxClose) {
-    lightboxClose.addEventListener('click', closeLightbox);
-}
-
-if (lightbox) {
-    lightbox.addEventListener('click', (e) => {
-        if (e.target === lightbox) {
-            closeLightbox();
-        }
-    });
-}
-
-// Close lightbox with Escape key
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && lightbox.classList.contains('active')) {
-        closeLightbox();
+document.getElementById('galleryGrid')?.addEventListener('click', e => {
+    const btn = e.target.closest('.gallery-btn');
+    if (btn) openLightbox(btn);
+});
+lightbox?.querySelector('.lightbox-close').addEventListener('click', closeLightbox);
+lightbox?.querySelector('.prev').addEventListener('click', () => showLightbox(lbIndex - 1));
+lightbox?.querySelector('.next').addEventListener('click', () => showLightbox(lbIndex + 1));
+lightbox?.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+document.addEventListener('keydown', e => {
+    if (lightbox.hidden) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') showLightbox(lbIndex - 1);
+    if (e.key === 'ArrowRight') showLightbox(lbIndex + 1);
+    if (e.key === 'Tab') { // fokus ostaje unutar lightboxa
+        const f = [...lightbox.querySelectorAll('button')];
+        const first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
     }
 });
 
-// ==========================================
-// Contact Form Handler
-// ==========================================
+// Reveal animacije (sadržaj je vidljiv i bez JS-a)
+if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const io = new IntersectionObserver(entries => {
+        entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
+    }, { rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.card, .steps li, .contact-item, .cta-inner').forEach(el => {
+        el.classList.add('reveal');
+        io.observe(el);
+    });
+}
 
+// ==========================================
+// Kontakt forma
+// ==========================================
 const contactForm = document.getElementById('contactForm');
 const formStartTimeInput = document.getElementById('formStartTime');
 const formMessage = document.querySelector('.form-message');
 
-// Set form start time when page loads
-if (formStartTimeInput) {
-    formStartTimeInput.value = Date.now();
-}
-
-// Reset form start time when user starts interacting with form
 if (contactForm) {
-    const formInputs = contactForm.querySelectorAll('input, textarea, select');
+    formStartTimeInput.value = Date.now();
     let formStartSet = false;
-    
-    formInputs.forEach(input => {
+    contactForm.querySelectorAll('input, textarea, select').forEach(input => {
         input.addEventListener('focus', () => {
             if (!formStartSet && input.name !== 'website') {
                 formStartTimeInput.value = Date.now();
@@ -134,169 +121,75 @@ if (contactForm) {
             }
         });
     });
-}
-
-async function handleFormSubmit(e) {
-    e.preventDefault();
-    
-    const formData = new FormData(contactForm);
-    const data = Object.fromEntries(formData);
-    
-    // Anti-spam checks
-    // 1. Honeypot check
-    if (data.website) {
-        console.log('Spam detected: honeypot filled');
-        showFormMessage('Došlo je do greške. Pokušajte ponovo.', 'error');
-        return;
-    }
-    
-    // 2. Time-on-form check (minimum 3 seconds)
-    const formStartTime = parseInt(data.formStartTime);
-    const currentTime = Date.now();
-    const timeSpent = currentTime - formStartTime;
-    
-    if (timeSpent < 3000) {
-        console.log('Spam detected: form filled too quickly');
-        showFormMessage('Molimo vas da popunite formu pažljivije.', 'error');
-        return;
-    }
-    
-    // Remove honeypot and timestamp from data
-    delete data.website;
-    delete data.formStartTime;
-    
-    // Basic validation
-    if (!data.name || !data.email || !data.message) {
-        showFormMessage('Molimo popunite sva obavezna polja.', 'error');
-        return;
-    }
-    
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(data.email)) {
-        showFormMessage('Molimo unesite ispravnu email adresu.', 'error');
-        return;
-    }
-    
-    // Disable submit button
-    const submitBtn = contactForm.querySelector('button[type="submit"]');
-    const originalBtnText = submitBtn.textContent;
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Šaljem...';
-    
-    try {
-        // Check if we're on localhost (API endpoint won't work locally)
-        const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-        
-        if (isLocalhost) {
-            // Simulate successful submission on localhost
-            console.log('📧 LOCALHOST TEST MOD - Forma bi bila poslana s ovim podacima:');
-            console.log('-----------------------------------');
-            console.log('Ime:', data.name);
-            console.log('Email:', data.email);
-            console.log('Telefon:', data.phone || 'nije uneseno');
-            console.log('Usluga:', data.service || 'nije odabrano');
-            console.log('Poruka:', data.message);
-            console.log('-----------------------------------');
-            showFormMessage('✅ TEST MOD: Forma bi bila uspješno poslana! (Na production Vercel serveru email će biti stvarno poslan)', 'success');
-            contactForm.reset();
-            formStartTimeInput.value = Date.now();
-            return;
-        }
-        
-        // Send to API endpoint (only works on Vercel)
-        const response = await fetch('/api/send-email', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        });
-        
-        if (response.ok) {
-            showFormMessage('Hvala! Vaša poruka je uspješno poslana. Javit ćemo vam se uskoro.', 'success');
-            contactForm.reset();
-            formStartTimeInput.value = Date.now();
-        } else {
-            const error = await response.json();
-            showFormMessage(error.message || 'Došlo je do greške. Pokušajte ponovo.', 'error');
-        }
-    } catch (error) {
-        console.error('Form submission error:', error);
-        showFormMessage('Došlo je do greške prilikom slanja. Pokušajte ponovo ili nas kontaktirajte telefonom.', 'error');
-    } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = originalBtnText;
-    }
+    contactForm.addEventListener('submit', handleFormSubmit);
 }
 
 function showFormMessage(message, type) {
     formMessage.textContent = message;
     formMessage.className = `form-message ${type}`;
     formMessage.style.display = 'block';
-    
-    // Scroll to message
     formMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    
-    // Hide message after 8 seconds for success, keep error visible
-    if (type === 'success') {
-        setTimeout(() => {
-            formMessage.style.display = 'none';
-        }, 8000);
+    if (type === 'success') setTimeout(() => { formMessage.style.display = 'none'; }, 8000);
+}
+
+async function handleFormSubmit(e) {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(contactForm));
+    contactForm.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid'));
+
+    // Anti-spam: honeypot i minimalno vrijeme na formi (3 s)
+    if (data.website) { showFormMessage('Došlo je do greške. Pokušajte ponovo.', 'error'); return; }
+    if (Date.now() - parseInt(data.formStartTime, 10) < 3000) {
+        showFormMessage('Molimo vas da popunite formu pažljivije.', 'error');
+        return;
+    }
+    delete data.website;
+    delete data.formStartTime;
+
+    const missing = ['name', 'email', 'message'].filter(k => !String(data[k] || '').trim());
+    if (missing.length) {
+        missing.forEach(k => contactForm.elements[k].classList.add('invalid'));
+        contactForm.elements[missing[0]].focus();
+        showFormMessage('Molimo popunite sva obavezna polja.', 'error');
+        return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+        contactForm.elements.email.classList.add('invalid');
+        contactForm.elements.email.focus();
+        showFormMessage('Molimo unesite ispravnu email adresu.', 'error');
+        return;
+    }
+
+    const submitBtn = contactForm.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Šaljem...';
+
+    try {
+        // Lokalno (npr. "serve") API ne postoji pa se slanje simulira; "vercel dev" ima API pa ide stvarno.
+        const isLocalhost = ['localhost', '127.0.0.1'].includes(location.hostname);
+        const res = await fetch('/api/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        }).catch(err => { if (isLocalhost) return null; throw err; });
+
+        if (res && res.ok) {
+            showFormMessage('Hvala! Vaša poruka je uspješno poslana. Javit ćemo vam se uskoro.', 'success');
+            contactForm.reset();
+            formStartTimeInput.value = Date.now();
+        } else if (!res || (isLocalhost && res.status === 404)) {
+            showFormMessage('TEST MOD (lokalno): API nije dostupan, ništa nije poslano. Forma je ispravno popunjena.', 'success');
+            contactForm.reset();
+            formStartTimeInput.value = Date.now();
+        } else {
+            const error = await res.json().catch(() => ({}));
+            showFormMessage(error.message || 'Došlo je do greške. Pokušajte ponovo.', 'error');
+        }
+    } catch (err) {
+        showFormMessage('Došlo je do greške prilikom slanja. Pokušajte ponovo ili nas nazovite.', 'error');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
     }
 }
-
-if (contactForm) {
-    contactForm.addEventListener('submit', handleFormSubmit);
-}
-
-// ==========================================
-// Smooth Scroll for Anchor Links
-// ==========================================
-
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        
-        if (target) {
-            const navbarHeight = navbar.offsetHeight;
-            const targetPosition = target.offsetTop - navbarHeight;
-            
-            window.scrollTo({
-                top: targetPosition,
-                behavior: 'smooth'
-            });
-        }
-    });
-});
-
-// ==========================================
-// Intersection Observer for Animations
-// ==========================================
-
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-};
-
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
-        }
-    });
-}, observerOptions);
-
-// Observe service cards and gallery items
-const animatedElements = document.querySelectorAll('.service-card, .gallery-item');
-animatedElements.forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(20px)';
-    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-    observer.observe(el);
-});
-
-// Log page view (for analytics)
-console.log('Page loaded:', window.location.pathname);
