@@ -48,8 +48,8 @@ module.exports = async function handler(req, res) {
         const safeService = service ? safe(service) : 'Opći upit';
 
         const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
-        sendSmtpEmail.to = [{ email: RECIPIENT_EMAIL, name: 'Fial Mont' }];
-        sendSmtpEmail.sender = { email: 'romario.fiala@gmail.com', name: 'Fial Mont Web Forma' };
+        sendSmtpEmail.to = [{ email: RECIPIENT_EMAIL, name: 'Fiala Mont' }];
+        sendSmtpEmail.sender = { email: 'romario.fiala@gmail.com', name: 'Fiala Mont Web Forma' };
         sendSmtpEmail.replyTo = { email: email, name: name };
         sendSmtpEmail.subject = `Novi upit sa web stranice - ${safeService}`;
         sendSmtpEmail.htmlContent = `
@@ -98,7 +98,7 @@ module.exports = async function handler(req, res) {
                         </div>
                     </div>
                     <div class="footer">
-                        <p>Ova poruka je poslana putem kontakt forme na stranici Fial Mont</p>
+                        <p>Ova poruka je poslana putem kontakt forme na stranici Fiala Mont</p>
                         <p>Datum: ${new Date().toLocaleString('hr-HR')}</p>
                     </div>
                 </div>
